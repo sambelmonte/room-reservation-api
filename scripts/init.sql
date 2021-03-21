@@ -1,20 +1,22 @@
 CREATE TABLE IF NOT EXISTS `admin_users`
 (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `hash` varchar(50) NOT NULL,
+  `id`         int unsigned NOT NULL AUTO_INCREMENT,
+  `username`   varchar(32) NOT NULL UNIQUE,
+  `hash`       varchar(50) NOT NULL,
   `created_at` datetime NOT NULL,
-  `deleted` bit NOT NULL DEFAULT 0,
+  `deleted`    bit NOT NULL DEFAULT 0,
+
   PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `regular_users`
 (
   `id`         int unsigned NOT NULL AUTO_INCREMENT,
-  `name`       varchar(50) NOT NULL,
+  `username`   varchar(32) NOT NULL UNIQUE,
   `hash`       varchar(100) NOT NULL,
   `created_at` datetime NOT NULL,
   `deleted`    bit NOT NULL DEFAULT 0,
+
   PRIMARY KEY (`id`)
 );
 
