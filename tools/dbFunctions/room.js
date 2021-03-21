@@ -1,6 +1,6 @@
-import { query } from '../db';
+const db = require('../db');
 
-export function getRooms(peopleCount = 0) {
+function getRooms(peopleCount = 0) {
   let peopleCountQuery = '';
   if (peopleCount > 0) {
     peopleCountQuery = `
@@ -14,7 +14,7 @@ export function getRooms(peopleCount = 0) {
       ${peopleCountQuery};`;
   
   return new Promise((resolve, reject) =>
-    query(dbQuery, (error, results, fields) => {
+    db.query(dbQuery, (error, results, fields) => {
       if (error) {
         reject(error);
       } else {
@@ -23,3 +23,5 @@ export function getRooms(peopleCount = 0) {
     })
   );
 }
+
+module.exports = { getRooms };

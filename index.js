@@ -1,8 +1,8 @@
-import express, { json } from 'express';
+const express = require('express');
 const app = express();
 
-app.user(json());
+app.use(express.json());
 
-app.use('/', require('./api/index').default.default);
+app.use('/', require('./api/index'));
 
 app.listen(3000);

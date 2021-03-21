@@ -1,6 +1,5 @@
-import { Router } from 'express';
-import { decryptKey } from '../tools/encrypt';
-import { getRooms } from '../tools/dbFunctions/room';
+const { Router } = require('express');
+const { getRooms } = require('../tools/dbFunctions/room');
 const router = Router();
 
 router.get('/', (req, res) => {
@@ -14,4 +13,4 @@ router.get('/', (req, res) => {
     );
 });
 
-export default router;
+module.exports = router;

@@ -1,0 +1,6 @@
+{
+  "host": "localhost",
+  "user": "reservation",
+  "password": "reservation",
+  "database": "reservation"
+}

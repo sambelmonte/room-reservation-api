@@ -1,13 +1,13 @@
-import { Router } from 'express';
-import {
+const { Router } = require('express');
+const {
   cancelReservation,
   getReservation,
   getRoomReservations,
   getUserReservations,
   getUserReservationsCount,
   reserveRoom
-} from '../tools/dbFunctions/reserve';
-import { decryptKey } from '../tools/encrypt';
+} = require('../tools/dbFunctions/reserve');
+const { decryptKey } = require('../tools/encrypt');
 const router = Router();
 
 router.get('/', (req, res) => {
@@ -111,4 +111,4 @@ router.delete('/:id', (req, res) => {
     .catch((error) => res.status(500).end());
 });
 
-export default router;
+module.exports = router;

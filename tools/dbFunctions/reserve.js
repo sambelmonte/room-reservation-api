@@ -1,6 +1,6 @@
-import { query } from '../db';
+const db = require('../db');
 
-export function getUserReservations(username, limit = 10, offset = 0) {
+function getUserReservations(username, limit = 10, offset = 0) {
   const dbQuery = `
     SELECT
       rm.name as name,
@@ -13,13 +13,13 @@ export function getUserReservations(username, limit = 10, offset = 0) {
         WHERE rs.room_id = rm.id
       INNER JOIN regular_users ru
         WHERE rs.user_id = ru.id
-    WHERE ru.username = ${username}
+    WHERE ru.username = '${username}'
       AND rm.deleted = 0
     LIMIT ${limit}
     OFFSET ${offset};`;
 
   return new Promise((resolve, reject) =>
-    query(dbQuery, (error, results, fields) => {
+    db.query(dbQuery, (error, results, fields) => {
       if (error) {
         reject(error);
       } else {
@@ -29,7 +29,7 @@ export function getUserReservations(username, limit = 10, offset = 0) {
   );
 }
 
-export function getUserReservationsCount(username) {
+function getUserReservationsCount(username) {
   const dbQuery = `
     SELECT COUNT(*) as count
     FROM reservations rs
@@ -37,11 +37,11 @@ export function getUserReservationsCount(username) {
         WHERE rs.room_id = rm.id
       INNER JOIN regular_users ru
         WHERE rs.user_id = ru.id
-    WHERE ru.username = ${username}
+    WHERE ru.username = '${username}'
       AND rm.deleted = 0;`;
 
   return new Promise((resolve, reject) =>
-    query(dbQuery, (error, results, fields) => {
+    db.query(dbQuery, (error, results, fields) => {
       if (error) {
         reject(error);
       } else {
@@ -51,7 +51,7 @@ export function getUserReservationsCount(username) {
   );
 }
 
-export function getReservation(username, roomId) {
+function getReservation(username, roomId) {
   const dbQuery = `
     SELECT
       rm.name as name,
@@ -64,11 +64,11 @@ export function getReservation(username, roomId) {
         WHERE rs.room_id = rm.id
       INNER JOIN regular_users ru
         WHERE rs.user_id = ru.id
-    WHERE ru.username = ${username}
+    WHERE ru.username = '${username}'
       AND rs.id = ${roomId};`;
 
   return new Promise((resolve, reject) =>
-    query(dbQuery, (error, results, fields) => {
+    db.query(dbQuery, (error, results, fields) => {
       if (error) {
         reject(error);
       } else {
@@ -78,7 +78,7 @@ export function getReservation(username, roomId) {
   );
 }
 
-export function getRoomReservations(roomId, startTime = 0, endTime = 0) {
+function getRoomReservations(roomId, startTime = 0, endTime = 0) {
   const dbQuery = `
     SELECT
       rm.name as name,
@@ -94,7 +94,7 @@ export function getRoomReservations(roomId, startTime = 0, endTime = 0) {
         OR rs.end_time BETWEEN ${startTime} AND ${endTime});`;
 
   return new Promise((resolve, reject) =>
-    query(dbQuery, (error, results, fields) => {
+    db.query(dbQuery, (error, results, fields) => {
       if (error) {
         reject(error);
       } else {
@@ -104,7 +104,7 @@ export function getRoomReservations(roomId, startTime = 0, endTime = 0) {
   );
 }
 
-export function reserveRoom(userId, roomId, startTime, endTime, peopleCount) {
+function reserveRoom(userId, roomId, startTime, endTime, peopleCount) {
   const dbQuery = `
     INSERT INTO reservations
       (user_id, room_id, start_time, end_time, people_count)
@@ -117,7 +117,7 @@ export function reserveRoom(userId, roomId, startTime, endTime, peopleCount) {
     );`;
 
   return new Promise((resolve, reject) =>
-    query(dbQuery, (error, results, fields) => {
+    db.query(dbQuery, (error, results, fields) => {
       if (error) {
         reject(error);
       } else {
@@ -127,14 +127,14 @@ export function reserveRoom(userId, roomId, startTime, endTime, peopleCount) {
   );
 }
 
-export function cancelReservation(reservationId) {
+function cancelReservation(reservationId) {
   const dbQuery = `
     UPDATE reservations
       SET cancelled = 1
       WHERE id = ${reservationId}`;
 
   return new Promise((resolve, reject) =>
-    query(dbQuery, (error, results, fields) => {
+    db.query(dbQuery, (error, results, fields) => {
       if (error) {
         reject(error);
       } else {
@@ -143,3 +143,12 @@ export function cancelReservation(reservationId) {
     })
   );
 }
+
+module.exports = {
+  cancelReservation,
+  getReservation,
+  getRoomReservations,
+  getUserReservations,
+  getUserReservationsCount,
+  reserveRoom
+};

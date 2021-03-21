@@ -1,21 +1,23 @@
-import { Router } from 'express';
-import { decryptKey } from '../tools/encrypt';
+const { Router } = require('express');
+const { decryptKey } = require('../tools/encrypt');
 const router = Router();
 
 router.use('/user', require('./user'));
 router.use('/room', auth, require('./room'));
 router.use('/reserve', auth, require('./reserve'));
 
-function auth(req, res, next) => {
-  if (!req.header.auth) {
+function auth(req, res, next) {
+  const auth = req.header('auth');
+
+  if (!auth) {
     res.status(401)
       .json({
         'message': 'Unauthorized access.'
       });
   }
 
-  const keyData = decryptKey(req.header.auth);
-  if (keyData.expiry < Date.now()) {
+  const { expiry } = decryptKey(auth);
+  if (expiry < Date.now()) {
     res.status(400)
       .json({
         'message': 'Access expired.'
@@ -25,4 +27,4 @@ function auth(req, res, next) => {
   next();
 };
 
-export default router;
+module.exports = router;

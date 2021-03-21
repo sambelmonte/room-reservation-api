@@ -1,10 +1,9 @@
-import { createConnection } from 'mysql';
-import { db } from '../config/db.json';
+const { createConnection } = require('mysql');
+const config = require('../config/db.json');
 
-var con = createConnection(db);
-con.connect(function(err){
-  if (err) throw err;
-  console.log("DB connected!");
-})
+const con = createConnection(config);
+con.connect(function(error){
+  if (error) throw error;
+});
 
-export default con;
+module.exports = con;
