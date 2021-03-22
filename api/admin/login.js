@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { getAdminUser } = require('../../tools/dbFunctions/user');
 const { checkPassword, encryptKey } = require('../../tools/encrypt');
+const log = require('../../tools/log');
 const router = Router();
 
 router.post('/', (req, res) => {
@@ -32,7 +33,10 @@ router.post('/', (req, res) => {
           }
         });
     })
-    .catch((error) => res.status(500).end());
+    .catch((error) => {
+      log('POST /admin/login', 'getAdminUser', req.body.username, error);
+      res.status(500).end();
+    });
 });
 
 module.exports = router;

@@ -8,6 +8,7 @@ const {
   reserveRoom
 } = require('../tools/dbFunctions/reserve');
 const { decryptKey } = require('../tools/encrypt');
+const log = require('../tools/log');
 const router = Router();
 
 router.get('/', (req, res) => {
@@ -25,9 +26,15 @@ router.get('/', (req, res) => {
               totalCount: count
             })
         )
-        .catch((error) => res.status(500).end())
+        .catch((error) => {
+          log('GET /reserve', 'getUserReservationsCount', username, error);
+          res.status(500).end();
+        })
     )
-    .catch((error) => res.status(500).end());
+    .catch((error) => {
+      log('GET /reserve', 'getUserReservations', username, error);
+      res.status(500).end();
+    });
 });
 
 router.get('/:id', (req, res) => {
@@ -38,7 +45,10 @@ router.get('/:id', (req, res) => {
       res.status(200)
         .json(reservation[0])
     )
-    .catch((error) => res.status(500).end());
+    .catch((error) => {
+      log('GET /reserve/:id', 'getReservation', username, error);
+      res.status(500).end();
+    });
 });
 
 router.post('/', (req, res) => {
@@ -81,7 +91,7 @@ router.post('/', (req, res) => {
         message: errors.join(' ')
       });
   } else {
-    const { userId } = decryptKey(req.header('auth'));
+    const { userId, username } = decryptKey(req.header('auth'));
 
     getRoomReservations(req.body.roomId, req.body.startTime, req.body.endTime)
       .then((reservations) => {
@@ -98,14 +108,22 @@ router.post('/', (req, res) => {
                   reservationId: reservation.insertId
                 })
             )
-            .catch((error) => res.status(500).end());
+            .catch((error) => {
+              log('POST /reserve', 'reserveRoom', username, error);
+              res.status(500).end();
+            })
         }
       })
-      .catch((error) => res.status(500).end());
+      .catch((error) => {
+        log('POST /reserve', 'getRoomReservations', username, error);
+        res.status(500).end();
+      });
   }
 });
 
 router.delete('/:id', (req, res) => {
+  const { username } = decryptKey(req.header('auth'));
+
   cancelReservation(req.params.id)
     .then((result) => {
       if (result.affectedRows === 0) {
@@ -116,7 +134,10 @@ router.delete('/:id', (req, res) => {
         'message': 'Reservation cancelled successfully'
       });
     })
-    .catch((error) => res.status(500).end());
+    .catch((error) => {
+      log('DELETE /reserve/:id', 'cancelReservation', username, error);
+      res.status(500).end();
+    });
 });
 
 module.exports = router;

@@ -1,10 +1,12 @@
 const { Router } = require('express');
 const { addRoom, getRooms, deleteRoom } = require('../../tools/dbFunctions/room');
 const { decryptKey } = require('../../tools/encrypt');
+const log = require('../../tools/log');
 const router = Router();
 
 router.get('/', (req, res) => {
   const peopleCount = Number(req.query.people ?? 0);
+  const { username } = decryptKey(req.header('adminAuth'), true);
 
   getRooms(peopleCount)
     .then((rooms) =>
@@ -12,7 +14,10 @@ router.get('/', (req, res) => {
         rooms
       })
     )
-    .catch((error) => res.status(500).end());
+    .catch((error) => {
+      log('GET /admin/room', 'getRooms', username, error);
+      res.status(500).end();
+    });
 });
 
 router.post('/', (req, res) => {
@@ -36,7 +41,7 @@ router.post('/', (req, res) => {
         message: errors.join(' ')
       });
   } else {
-    const { userId } = decryptKey(req.header('adminAuth'), true);
+    const { userId, username } = decryptKey(req.header('adminAuth'), true);
   
     addRoom(userId, req.body.name, req.body.maxCapacity)
       .then((room) =>
@@ -45,11 +50,16 @@ router.post('/', (req, res) => {
             roomId: room.insertId
           })
       )
-      .catch((error) => res.status(500).end());
+      .catch((error) => {
+        log('POST /admin/room', 'addRoom', username, error);
+        res.status(500).end();
+      });
   }
 });
 
 router.delete('/:id', (req, res) => {
+  const { username } = decryptKey(req.header('adminAuth'), true);
+
   deleteRoom(req.params.id)
     .then((result) => {
       if (result.affectedRows === 0) {
@@ -60,7 +70,10 @@ router.delete('/:id', (req, res) => {
         'message': 'Room deleted successfully'
       });
     })
-    .catch((error) => res.status(500).end());
+    .catch((error) => {
+      log('DELETE /admin/room/:id', 'deleteRooms', username, error);
+      res.status(500).end();
+    });
 });
 
 module.exports = router;

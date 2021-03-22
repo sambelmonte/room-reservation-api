@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const { checkPassword, encryptKey, generateHash } = require('../tools/encrypt');
 const { createUser, getUser } = require('../tools/dbFunctions/user');
+const log = require('../tools/log');
 const router = Router();
 
 router.post('/new', (req, res) => {
@@ -36,7 +37,10 @@ router.post('/new', (req, res) => {
                 userId: user.insertId
               })
           )
-          .catch((error) => res.status(500).end())
+          .catch((error) => {
+            log('POST /user/new', 'createUser', req.body.username, error);
+            res.status(500).end();
+          })
       );
   }
 });
@@ -70,7 +74,10 @@ router.post('/login', (req, res) => {
           }
         });
     })
-    .catch((error) => res.status(500).end());
+    .catch((error) => {
+      log('POST /user/login', 'getUser', req.body.username, error);
+      res.status(500).end();
+    });
 });
 
 module.exports = router;
