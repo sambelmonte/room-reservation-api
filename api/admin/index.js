@@ -1,14 +1,12 @@
 const { Router } = require('express');
-const { decryptKey } = require('../tools/encrypt');
+const { decryptKey } = require('../../tools/encrypt');
 const router = Router();
 
-router.use('/admin', require('./admin/index'));
-router.use('/user', require('./user'));
+router.use('/login', require('./login'));
 router.use('/room', auth, require('./room'));
-router.use('/reserve', auth, require('./reserve'));
 
 function auth(req, res, next) {
-  const auth = req.header('auth');
+  const auth = req.header('adminAuth');
 
   if (!auth) {
     res.status(401)
@@ -17,7 +15,7 @@ function auth(req, res, next) {
       });
   }
 
-  const { expiry } = decryptKey(auth);
+  const { expiry } = decryptKey(auth, true);
   if (expiry < Date.now()) {
     res.status(400)
       .json({

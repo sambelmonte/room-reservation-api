@@ -2,9 +2,9 @@ CREATE TABLE IF NOT EXISTS `admin_users`
 (
   `id`         int unsigned NOT NULL AUTO_INCREMENT,
   `username`   varchar(32) NOT NULL UNIQUE,
-  `hash`       varchar(50) NOT NULL,
+  `hash`       varchar(100) NOT NULL,
   `created_at` datetime NOT NULL,
-  `deleted`    bit NOT NULL DEFAULT 0,
+  `deleted`    tinyint(1) NOT NULL DEFAULT 0,
 
   PRIMARY KEY (`id`)
 );
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `regular_users`
   `username`   varchar(32) NOT NULL UNIQUE,
   `hash`       varchar(100) NOT NULL,
   `created_at` datetime NOT NULL,
-  `deleted`    bit NOT NULL DEFAULT 0,
+  `deleted`    tinyint(1) NOT NULL DEFAULT 0,
 
   PRIMARY KEY (`id`)
 );
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `rooms`
   `name`         varchar(50) NOT NULL ,
   `created_by`   int unsigned NOT NULL ,
   `created_at`   datetime NOT NULL ,
-  `deleted`      bit NOT NULL DEFAULT 0 ,
+  `deleted`      tinyint(1) NOT NULL DEFAULT 0 ,
   `max_capacity` int unsigned NOT NULL ,
 
   PRIMARY KEY (`id`),
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `reservations`
   `user_id`      int unsigned NOT NULL ,
   `start_time`   datetime NOT NULL ,
   `end_time`     datetime NOT NULL ,
-  `cancelled`    bit NOT NULL DEFAULT 0 ,
+  `cancelled`    tinyint(1) NOT NULL DEFAULT 0 ,
   `people_count` int NOT NULL ,
 
   PRIMARY KEY (`id`),

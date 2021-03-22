@@ -21,20 +21,22 @@ function checkPassword(password, hash) {
   });
 }
 
-function encryptKey(userId, username) {
+function encryptKey(userId, username, isAdmin = false) {
+  const separator = isAdmin? '!|!': ':|:';
   // Key will expire after 24 hours
   const expiry = Date.now() + (24*60*60*1000);
-  const text = `${userId}:|:${expiry}:|:${username}`;
+  const text = [userId, username, expiry].join(separator);
 
   const cipher = crypto.createCipheriv(algorithm, secretKey, Buffer.from(iv, 'hex'));
   const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
   return encrypted.toString('hex');
 }
 
-function decryptKey(key) {
+function decryptKey(key, isAdmin = false) {
+  const separator = isAdmin? '!|!': ':|:';
   const decipher = crypto.createDecipheriv(algorithm, secretKey, Buffer.from(iv, 'hex'));
   const decrpyted = Buffer.concat([decipher.update(Buffer.from(key, 'hex')), decipher.final()]);
-  const keyData = decrpyted.toString().split(':|:');
+  const keyData = decrpyted.toString().split(separator);
   return {
     userId: keyData[0],
     expiry: keyData[1],

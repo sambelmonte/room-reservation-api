@@ -10,7 +10,8 @@ router.get('/', (req, res) => {
       res.status(200).json({
         rooms
       })
-    );
+    )
+    .catch((error) => res.status(500).end());
 });
 
 module.exports = router;
