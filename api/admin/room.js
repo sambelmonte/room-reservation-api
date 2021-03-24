@@ -27,14 +27,6 @@ router.post('/', (req, res) => {
     errors.push('name is required.')
   }
 
-  if (!req.body.maxCapacity) {
-    errors.push('maxCapacity is required.')
-  } else if (!Number.isInteger(req.body.maxCapacity)) {
-    errors.push('maxCapacity should be a number.')
-  } else if (req.body.maxCapacity <= 0) {
-    errors.push('maxCapacity should be at least 1.')
-  }
-
   if (errors.length > 0) {
     res.status(400)
       .json({
@@ -43,7 +35,7 @@ router.post('/', (req, res) => {
   } else {
     const { userId, username } = decryptKey(req.header('adminAuth'), true);
   
-    addRoom(userId, req.body.name, req.body.maxCapacity)
+    addRoom(userId, req.body.name)
       .then((room) =>
         res.status(200)
           .json({

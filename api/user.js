@@ -64,6 +64,7 @@ router.post('/login', (req, res) => {
           if(isPasswordCorrect) {
             res.status(200)
               .json({
+                id: user[0].id,
                 key: encryptKey(user[0].id, req.body.username)
               });
           } else {

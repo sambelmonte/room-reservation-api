@@ -1,5 +1,6 @@
 const { Router } = require('express');
 const { getRooms } = require('../tools/dbFunctions/room');
+const { decryptKey } = require('../tools/encrypt');
 const log = require('../tools/log');
 const router = Router();
 

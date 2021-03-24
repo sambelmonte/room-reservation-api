@@ -25,7 +25,7 @@ function encryptKey(userId, username, isAdmin = false) {
   const separator = isAdmin? '!|!': ':|:';
   // Key will expire after 24 hours
   const expiry = Date.now() + (24*60*60*1000);
-  const text = [userId, username, expiry].join(separator);
+  const text = [userId, expiry, username].join(separator);
 
   const cipher = crypto.createCipheriv(algorithm, secretKey, Buffer.from(iv, 'hex'));
   const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);

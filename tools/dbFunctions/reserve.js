@@ -3,6 +3,7 @@ const db = require('../db');
 function getUserReservations(username, limit = 10, offset = 0) {
   const dbQuery = `
     SELECT
+      rs.id as id,
       rm.name as name,
       UNIX_TIMESTAMP(rs.start_time) as startTime,
       UNIX_TIMESTAMP(rs.end_time) as endTime,
@@ -15,6 +16,7 @@ function getUserReservations(username, limit = 10, offset = 0) {
         ON rs.user_id = ru.id
     WHERE ru.username = '${username}'
       AND rm.deleted = 0
+    ORDER BY rs.start_time DESC
     LIMIT ${limit}
     OFFSET ${offset};`;
 
@@ -54,6 +56,7 @@ function getUserReservationsCount(username) {
 function getReservation(username, roomId) {
   const dbQuery = `
     SELECT
+      rs.id as id,
       rm.name as name,
       UNIX_TIMESTAMP(rs.start_time) as startTime,
       UNIX_TIMESTAMP(rs.end_time) as endTime,
@@ -81,6 +84,7 @@ function getReservation(username, roomId) {
 function getRoomReservations(roomId, startTime = 0, endTime = 0) {
   const dbQuery = `
     SELECT
+      rs.id as id,
       rm.name as name,
       UNIX_TIMESTAMP(rs.start_time) as startTime,
       UNIX_TIMESTAMP(rs.end_time) as endTime,

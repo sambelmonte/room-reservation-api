@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS `rooms`
   `created_by`   int unsigned NOT NULL ,
   `created_at`   datetime NOT NULL ,
   `deleted`      tinyint(1) NOT NULL DEFAULT 0 ,
-  `max_capacity` int unsigned NOT NULL ,
 
   PRIMARY KEY (`id`),
   FOREIGN KEY (`created_by`) REFERENCES `admin_users` (`id`)

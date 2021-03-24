@@ -1,17 +1,10 @@
 const db = require('../db');
 
-function getRooms(peopleCount = 0) {
-  let peopleCountQuery = '';
-  if (peopleCount > 0) {
-    peopleCountQuery = `
-      AND max_capacity >= ${peopleCount}
-    `;
-  }
+function getRooms() {
   const dbQuery = `
-    SELECT id, name, max_capacity
+    SELECT id, name
       FROM rooms
-      WHERE deleted = 0
-      ${peopleCountQuery};`;
+      WHERE deleted = 0;`;
   
   return new Promise((resolve, reject) =>
     db.query(dbQuery, (error, results, fields) => {
@@ -24,13 +17,13 @@ function getRooms(peopleCount = 0) {
   );
 }
 
-function addRoom(adminId, name, maxCapacity) {
+function addRoom(adminId, name) {
   const dbQuery = `
     INSERT
       INTO rooms
-        (name, created_by, created_at, max_capacity)
+        (name, created_by, created_at)
       VALUES
-        ('${name}', ${adminId}, NOW(), ${maxCapacity})`;
+        ('${name}', ${adminId}, NOW())`;
   
   return new Promise((resolve, reject) =>
     db.query(dbQuery, (error, results, fields) => {
