@@ -13,17 +13,17 @@ function auth(req, res, next) {
       .json({
         'message': 'Unauthorized access.'
       });
-  }
+  } else {
+    const { expiry } = decryptKey(auth, true);
+    if (expiry < Date.now()) {
+      res.status(400)
+        .json({
+          'message': 'Access expired.'
+        });
+    }
 
-  const { expiry } = decryptKey(auth, true);
-  if (expiry < Date.now()) {
-    res.status(400)
-      .json({
-        'message': 'Access expired.'
-      });
+    next();
   }
-
-  next();
 };
 
 module.exports = router;
